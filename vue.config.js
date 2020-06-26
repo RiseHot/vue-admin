@@ -6,7 +6,7 @@ module.exports = {
   // 默认情况下，Vue CLI假设您的应用程序将部署在域的根目录下。
   // https://www.my-app.com/。如果应用程序部署在子路径上，则需要使用此选项指定子路径。例如，如果您的应用程序部署在https://www.foobar.com/my-app/，集baseUrl到'/my-app/'.
 
-  publicPath: process.env.NODE_ENV === 'production' ? './' : './',
+  publicPath: process.env.NODE_ENV === 'production' ? '' : './',
 
   // outputDir: 在npm run build时 生成文件的目录 type:string, default:'dist'
 
@@ -36,7 +36,7 @@ module.exports = {
  },
 
   //   lintOnSave：{ type:Boolean default:true } 问你是否使用eslint
-  lintOnSave: true,
+  lintOnSave: false,
   // productionSourceMap：{ type:Bollean,default:true } 生产源映射
   // 如果您不需要生产时的源映射，那么将此设置为false可以加速生产构建
   productionSourceMap: false,
@@ -45,10 +45,18 @@ module.exports = {
 
   devServer: {
       port: 8080, // 端口号
-      host: 'localhost',
+      host:"192.168.1.3",
       https: false, // https:{type:Boolean}
       open: false, //配置自动启动浏览器
-      // proxy: 'http://localhost:4000' // 配置跨域处理,只有一个代理
+      proxy: {
+				'/devapi':{
+					target:'http://127.0.0.1:8585/code',
+					changeOrigin: true,
+					pathRewrite: {   //重写URL路径 下面是正则匹配替换
+						'^/devapi': ''
+					}
+				} // 配置跨域处理,只有一个代理
+			}
   },
 
   css: {
@@ -66,5 +74,20 @@ module.exports = {
     // 向 PWA 插件传递选项
     pwa: {},
     // 可以用来传递任何第三方插件选项
-    pluginOptions: {}
+    pluginOptions: {},
+	
+	configureWebpack:(config) => {
+		config.resolve = {
+			extensions: ['.js', '.json', '.vue'],
+			alias: {
+				'@': path.resolve(__dirname, './src'),
+				'public': path.resolve(__dirname, './public'),
+				'@c': path.resolve(__dirname, './src/components'),
+				'common': path.resolve(__dirname, './src/common'),
+				'api': path.resolve(__dirname, './src/api'),
+				'views': path.resolve(__dirname, './src/views'),
+				'data': path.resolve(__dirname, './src/data'),
+			}
+		}
+	},
 }
