@@ -50,7 +50,7 @@ module.exports = {
       open: false, //配置自动启动浏览器
       proxy: {
 				'/devapi':{
-					target:'http://127.0.0.1:8585/code',
+					target:'http://127.0.0.1:8585',
 					changeOrigin: true,
 					pathRewrite: {   //重写URL路径 下面是正则匹配替换
 						'^/devapi': ''
@@ -75,18 +75,31 @@ module.exports = {
     pwa: {},
     // 可以用来传递任何第三方插件选项
     pluginOptions: {},
+		
+	chainWebpack: (config) => {
+		const svgRule = config.module.rule("svg");
+		svgRule.uses.clear();
+		svgRule
+		.use("svg-sprite-loader")
+		.loader("svg-sprit-loader")
+		.options({
+			symbolId: "icon-[name]",
+			include: ["./src/icons"]
+		});
+	},
 	
 	configureWebpack:(config) => {
 		config.resolve = {
 			extensions: ['.js', '.json', '.vue'],
 			alias: {
+				'vue': 'vue/dist/vue.js',
 				'@': path.resolve(__dirname, './src'),
 				'public': path.resolve(__dirname, './public'),
 				'@c': path.resolve(__dirname, './src/components'),
-				'common': path.resolve(__dirname, './src/common'),
-				'api': path.resolve(__dirname, './src/api'),
-				'views': path.resolve(__dirname, './src/views'),
-				'data': path.resolve(__dirname, './src/data'),
+				// 'common': path.resolve(__dirname, './src/common'),
+				// 'api': path.resolve(__dirname, './src/api'),
+				// 'views': path.resolve(__dirname, './src/views'),
+				// 'data': path.resolve(__dirname, './src/data'),
 			}
 		}
 	},

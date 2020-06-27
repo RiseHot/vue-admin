@@ -26,6 +26,6 @@ export function validatePass(value){
 
 // 验证码
 export function validateCode(value){
-	let reg = /^[a-z 0-9]{6}$/;
+	let reg = /^[0-9a-z]{6}$/;
 	return !reg.test(value) ? true : false
 }
